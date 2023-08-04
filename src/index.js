@@ -13,4 +13,13 @@ app.get("/todos",(req,res)=>{
     res.send(data);
 })
 
+app.use(express.json()) //middleware func
+//http://localhost:3000/todos
+app.post("/todos",(req,res)=>{
+    let newTodo=req.body;
+    newTodo= {id:data.length+1,...newTodo}
+    data.push(newTodo)
+    res.status(201).json(newTodo);
+})
+
 app.listen(PORT,()=>console.log(`express server running on port ${PORT}`))

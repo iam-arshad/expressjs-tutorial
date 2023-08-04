@@ -22,3 +22,16 @@ Write the code for the get request at /todos endpoint as mentioned in the src/in
 Postman:GET http://localhost:3000/todos
 hit this api in postman, and you will get the data as response.
 
+3.post request
+Write the code for the post request at /todos endpoint as mentioned in the src/index.js
+Postman: body/raw/json
+{"title":"review pull requests","description":"review pull requests on github","completed":false}
+
+will get the response of same todo with the todo id,
+{
+    "id": 3,
+    "title": "review pull requests",
+    "description": "review pull requests on github",
+    "completed": false
+}
+
