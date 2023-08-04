@@ -15,12 +15,18 @@ Add these two commands under scripts in package.json:
 >npm run start:dev
 will start our server
 
+
+
+
 2.get request
 Install postman, an API platform for building and using APIs.
 Write the code for the get request at /todos endpoint as mentioned in the src/index.js
 >npm run dev:start
 Postman:GET http://localhost:3000/todos
 hit this api in postman, and you will get the data as response.
+
+
+
 
 3.post request
 Write the code for the post request at /todos endpoint as mentioned in the src/index.js
@@ -34,4 +40,16 @@ will get the response of same todo with the todo id,
     "description": "review pull requests on github",
     "completed": false
 }
+
+
+
+
+4a.Query params
+To filter the data on any endpoint
+ex:
+http://localhost:3000/todos?id=1
+http://localhost:3000/todos?id=1&title=abc
+>req.query
+//{id:1,title:abc}
+The code to handle those query params will be in the same endpoint(here http://localhost:3000/todos)
 

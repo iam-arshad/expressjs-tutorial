@@ -9,8 +9,18 @@ const data=[
 ]
 
 //http://localhost:3000/todos
+//http://localhost:3000/todos?id=1
 app.get("/todos",(req,res)=>{
-    res.send(data);
+    let id=parseInt(req.query.id);
+    if(id)
+    {
+        let fileteredData=data.find(todo=>todo.id===id);
+        res.send(fileteredData);
+    }
+    else
+    {
+        res.send(data);
+    }
 })
 
 app.use(express.json()) //middleware func
