@@ -1,3 +1,4 @@
+create a repo in github and clone it locally
 git clone https://github.com/iam-arshad/expressjs-tutorial.git
 
 C:\Users\arshad\VS code Projects\expressjs-tutorial>npm init
@@ -13,4 +14,11 @@ Add these two commands under scripts in package.json:
 
 >npm run start:dev
 will start our server
+
+2.get request
+Install postman, an API platform for building and using APIs.
+Write the code for the get request at /todos endpoint as mentioned in the src/index.js
+>npm run dev:start
+Postman:GET http://localhost:3000/todos
+hit this api in postman, and you will get the data as response.
 
