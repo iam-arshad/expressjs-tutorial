@@ -1,0 +1,16 @@
+git clone https://github.com/iam-arshad/expressjs-tutorial.git
+
+C:\Users\arshad\VS code Projects\expressjs-tutorial>npm init
+
+>npm i expressjs nodemon
+
+create a file src/index.js:
+console.log("abc");
+
+Add these two commands under scripts in package.json:
+"start":"node ./src/index.js",
+"start:dev":"nodemon ./src/index.js"
+
+>npm run start:dev
+will start our server
+

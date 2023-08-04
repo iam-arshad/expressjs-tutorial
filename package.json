@@ -1,0 +1,28 @@
+{
+  "name": "expressjs-tutorial",
+  "version": "1.0.0",
+  "description": "An expressjs tutorial",
+  "main": "./src/index.js",
+  "scripts": {
+    "start": "node ./src/index.js",
+    "start:dev": "nodemon ./src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iam-arshad/expressjs-tutorial.git"
+  },
+  "keywords": [
+    "expressjs"
+  ],
+  "author": "Arshad",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/iam-arshad/expressjs-tutorial/issues"
+  },
+  "homepage": "https://github.com/iam-arshad/expressjs-tutorial#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "nodemon": "^3.0.1"
+  }
+}
