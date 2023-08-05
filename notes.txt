@@ -53,3 +53,13 @@ http://localhost:3000/todos?id=1&title=abc
 //{id:1,title:abc}
 The code to handle those query params will be in the same endpoint(here http://localhost:3000/todos)
 
+
+
+
+4b.url(route) params
+to identify a specific resource
+ex:
+http://localhost:3000/todos/1
+http://localhost:3000/todos/2
+>req.params
+

@@ -23,6 +23,15 @@ app.get("/todos",(req,res)=>{
     }
 })
 
+
+// http://localhost:3000/todos/2
+app.get("/todos/:id",(req,res)=>{
+    let id=parseInt(req.params.id);
+    console.log(id);
+    (id)?res.send(data[id-1]):res.send("todo not found!");
+})
+
+
 app.use(express.json()) //middleware func
 //http://localhost:3000/todos
 app.post("/todos",(req,res)=>{
