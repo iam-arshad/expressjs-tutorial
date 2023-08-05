@@ -27,7 +27,6 @@ app.get("/todos",(req,res)=>{
 // http://localhost:3000/todos/2
 app.get("/todos/:id",(req,res)=>{
     let id=parseInt(req.params.id);
-    console.log(id);
     (id)?res.send(data[id-1]):res.send("todo not found!");
 })
 
@@ -40,5 +39,20 @@ app.post("/todos",(req,res)=>{
     data.push(newTodo)
     res.status(201).json(newTodo);
 })
+
+// http://localhost:3000/todos/4
+app.put("/todos/:id",(req,res)=>{
+    let todoId=parseInt(req.params.id);
+    let todo=req.body;
+    const todoIndexInTodosArray=data.findIndex(todo=>todo.id===todoId);
+    if(todoIndexInTodosArray!==-1){
+        data[todoIndexInTodosArray]={id:todoId,...todo}
+        res.status(201).send(data);
+    }
+    else{
+        res.status(400).send('todo with that id doesnt exists');
+    }
+})
+
 
 app.listen(PORT,()=>console.log(`express server running on port ${PORT}`))

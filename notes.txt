@@ -63,3 +63,13 @@ http://localhost:3000/todos/1
 http://localhost:3000/todos/2
 >req.params
 
+
+5a.PUT request
+This request is to update/replace the entire resource(a new resource can also be created)
+As we have 2 todos in our data.If i want to update the 2nd todo
+Postman:
+PUT: http://localhost:3000/todos/2
+Body/raw/JSON: {"title":"review pull requests","description":"review pull requests on github","completed":false}
+When we hit this api,then the 2nd todo will be updated with the new data.
+
+
