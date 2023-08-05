@@ -79,3 +79,11 @@ If we want to update the todo status completed as true,
 PATCH: http://localhost:3000/todos/1
 Body/raw/JSON: {"completed":false}
 When we hit this api,then the 1st todo will be updated with the new completed status as true.
+
+
+6.DELETE request
+To delete a resource
+To delete a todo from the todos data,
+DELETE: http://localhost:3000/todos/1
+When we hit this api,then the 1st todo will be deleted and will return the deleted todo.
+

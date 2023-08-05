@@ -50,9 +50,10 @@ app.put("/todos/:id",(req,res)=>{
         res.status(201).send(data);
     }
     else{
-        res.status(400).send('todo not found');
+        res.status(404).json({error:"todo not found"});
     }
 })
+
 
 // http://localhost:3000/todos/1
 app.patch("/todos/:id",(req,res)=>{
@@ -65,6 +66,20 @@ app.patch("/todos/:id",(req,res)=>{
     else{
         data[todoIndexInTodosArray].completed=req.body.completed;
         res.status(201).json(data[todoIndexInTodosArray]);
+    }
+})
+
+
+// http://localhost:3000/todos/3
+app.delete("/todos/:id",(req,res)=>{
+    const id=parseInt(req.params.id);
+    const todoIndex=data.findIndex(todo=>todo.id===id);
+    if(todoIndex!==-1){
+        const deletedTodo= data.splice(id-1,1)[0];
+        res.json(deletedTodo);
+    }
+    else{
+        res.status(404).json({error:"todo not found"});
     }
 })
 
