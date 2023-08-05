@@ -50,7 +50,21 @@ app.put("/todos/:id",(req,res)=>{
         res.status(201).send(data);
     }
     else{
-        res.status(400).send('todo with that id doesnt exists');
+        res.status(400).send('todo not found');
+    }
+})
+
+// http://localhost:3000/todos/1
+app.patch("/todos/:id",(req,res)=>{
+    let todoId=parseInt(req.params.id);
+    let todoIndexInTodosArray=data.findIndex(todo=>todo.id===todoId);
+    if(todoIndexInTodosArray===-1)
+    {
+        res.send('todo not found')
+    }
+    else{
+        data[todoIndexInTodosArray].completed=req.body.completed;
+        res.status(201).json(data[todoIndexInTodosArray]);
     }
 })
 

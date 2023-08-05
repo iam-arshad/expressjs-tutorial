@@ -73,3 +73,9 @@ Body/raw/JSON: {"title":"review pull requests","description":"review pull reques
 When we hit this api,then the 2nd todo will be updated with the new data.
 
 
+5b. PATCH request
+This is to partially update the resource data.
+If we want to update the todo status completed as true,
+PATCH: http://localhost:3000/todos/1
+Body/raw/JSON: {"completed":false}
+When we hit this api,then the 1st todo will be updated with the new completed status as true.
