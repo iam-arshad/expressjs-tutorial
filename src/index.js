@@ -8,6 +8,18 @@ const data=[
     {id:2,title:"buy meds",description:"order meds for dad",completed:false},
 ]
 
+
+// Custom Middleware
+const myMiddleware = function(req, res, next) {
+    console.log('This is my custom middleware!');
+    //write your custom logic here
+    next();// Call next to pass the control to the next middleware
+  };
+  
+// Using the custom middleware
+app.use(myMiddleware);
+
+
 //http://localhost:3000/todos
 //http://localhost:3000/todos?id=1
 app.get("/todos",(req,res)=>{

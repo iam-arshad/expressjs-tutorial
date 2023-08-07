@@ -119,3 +119,32 @@ Note: can also be chained like res.status(201).send("ok");
 
 
 
+8. Middlewares
+Middlewares in Express are functions that have access to the request (req) and response (res) objects and the next function.
+They enable you to perform various tasks in between processing a request and sending a response.
+Middlewares are used for tasks such as authentication, logging, error handling, and parsing the request body.
+Each middleware can perform its action and then choose to either pass the request to the next middleware in the chain or respond to the client directly.
+
+A middleware is defined using the app.use() method
+Even the route handler is a middleware.
+Middleware can be custom defined functions,3rd party packages like body-parser, morgan, cors,helmet,...
+
+a)Middleware for all the routes:
+app.use((req,res,next)=>{...;next();})
+
+b)Middleware for a specific route
+app.get("/todos",(req,res,next)=>{..;next();},(req,res)=>{....})
+Here there is only 1 middleware but we can chain many middlewares(in which each calls the other using next() until it reaches the route handler)
+
+Execute code on every request:
+1.Middlewares defined using app.use() are executed on every incoming request regardless of the request method (GET, POST, etc.) or the URL.
+2.Order of Middleware Execution:
+in the order they are declared in your application. So, if you have multiple middlewares defined, the first middleware gets executed first, then the second, and so on.
+3.Manipulate Request and Response:
+Middlewares have access to both the req and res objects. You can read and modify request data, set response headers, and perform other operations before sending the final response.
+4.Handle Errors:
+You can define error-handling middleware functions using four parameters (err, req, res, next). These middleware functions are called whenever there is an error during the request-response cycle.
+5.Terminate Request-Response Cycle:
+A middleware can also decide to terminate the request-response cycle by responding to the client directly without calling the next() function.
+
+
