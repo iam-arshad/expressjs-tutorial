@@ -6,7 +6,7 @@ const PORT=3000
 
 // Custom Middleware
 const myMiddleware = function(req, res, next) {
-    console.log('This is my custom middleware!',req.url,req.path);
+    console.log('This is my custom middleware!');
     //write your custom logic here
     next();// Call next to pass the control to the next middleware
   };

@@ -10,7 +10,7 @@ const data=[
 
 //http://localhost:3000/todos
 //http://localhost:3000/todos?id=1
-router.get("/todos",(req,res)=>{
+router.get("/",(req,res)=>{
     let id=parseInt(req.query.id);
     if(id)
     {
@@ -25,7 +25,7 @@ router.get("/todos",(req,res)=>{
 
 
 // http://localhost:3000/todos/2
-router.get("/todos/:id",(req,res)=>{
+router.get("/:id",(req,res)=>{
     let id=parseInt(req.params.id);
     (id)?res.send(data[id-1]):res.send("todo not found!");
 })
@@ -33,7 +33,7 @@ router.get("/todos/:id",(req,res)=>{
 
 router.use(express.json()) //middleware func
 //http://localhost:3000/todos
-router.post("/todos",(req,res)=>{
+router.post("/",(req,res)=>{
     let newTodo=req.body;
     newTodo= {id:data.length+1,...newTodo}
     data.push(newTodo)
@@ -41,7 +41,7 @@ router.post("/todos",(req,res)=>{
 })
 
 // http://localhost:3000/todos/4
-router.put("/todos/:id",(req,res)=>{
+router.put("/:id",(req,res)=>{
     let todoId=parseInt(req.params.id);
     let todo=req.body;
     const todoIndexInTodosArray=data.findIndex(todo=>todo.id===todoId);
@@ -56,7 +56,7 @@ router.put("/todos/:id",(req,res)=>{
 
 
 // http://localhost:3000/todos/1
-router.patch("/todos/:id",(req,res)=>{
+router.patch("/:id",(req,res)=>{
     let todoId=parseInt(req.params.id);
     let todoIndexInTodosArray=data.findIndex(todo=>todo.id===todoId);
     if(todoIndexInTodosArray===-1)
@@ -71,7 +71,7 @@ router.patch("/todos/:id",(req,res)=>{
 
 
 // http://localhost:3000/todos/3
-router.delete("/todos/:id",(req,res)=>{
+router.delete("/:id",(req,res)=>{
     const id=parseInt(req.params.id);
     const todoIndex=data.findIndex(todo=>todo.id===id);
     if(todoIndex!==-1){
