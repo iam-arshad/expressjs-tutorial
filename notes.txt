@@ -148,3 +148,24 @@ You can define error-handling middleware functions using four parameters (err, r
 A middleware can also decide to terminate the request-response cycle by responding to the client directly without calling the next() function.
 
 
+
+9. Express Router
+In our tutorial upto now we have only todos section, but in the furthur sections we need to have database connectivity and so on.For that, if we write all our code in index.js, it will be difficult later on for debugging,updating,....
+you can organize your routes into separate modules and then use the Express Router to manage these routes. This approach makes your code more modular and easier to maintain as your application grows.
+
+create new directories & files in src as routes/todos/todos.js and move all the code related to the todos.
+modify the code from app(Express instance) to router(Router instance)
+export that router from todos.js and import it in src/index,js and mount it as a middleware at the prefix "/todos"
+
+Now our enpoints will be accessible at the base path of http://localhost:3000/todos/
+Ex:
+GET: http://localhost:3000/todos/todos
+GET: http://localhost:3000/todos/todos?id=1
+GET: http://localhost:3000/todos/todos/1
+POST: http://localhost:3000/todos/todos
+PUT:http://localhost:3000/todos/todos/1
+PATCH: http://localhost:3000/todos/todos/1
+DELETE: http://localhost:3000/todos/todos/1
+where the first "todos" is the prefix and the second "todos" is the endpoint, we will fix them in the next chapter
+
+
