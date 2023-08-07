@@ -87,3 +87,35 @@ To delete a todo from the todos data,
 DELETE: http://localhost:3000/todos/1
 When we hit this api,then the 1st todo will be deleted and will return the deleted todo.
 
+
+
+7.Common(most used) request and response object methods
+Request Object (req):
+req.params: An object containing route parameters, e.g., /users/:id will be available as req.params.id.
+req.query: An object containing the parsed query parameters from the URL.
+req.body: An object containing the parsed request body when using a middleware like body-parser to handle JSON, URL-encoded, or multi-part form data.
+req.cookies: An object containing cookies sent by the client.
+req.headers: An object containing the HTTP headers sent by the client.
+req.method: The HTTP method used in the request (GET, POST, PUT, DELETE, etc.).
+req.url: The URL of the request.
+req.path: The path of the request (excluding query parameters).
+req.protocol: The request protocol (http or https).
+req.get(headerName): Get the value of an HTTP header.
+...
+
+Response Object (res):
+res.send(data): Send a response with the specified data to the client. The data can be a string, object, or buffer.
+res.json(data): Send a JSON response to the client.
+res.status(code): Set the status code of the response.
+res.redirect(path): Redirect the client to the specified path.
+res.render(view, data): Render a view template and send it as a response to the client.
+res.sendFile(path): Send a file as the response to the client.
+res.set(headerName, value): Set an HTTP header in the response.
+res.cookie(name, value, options): Set a cookie in the response.
+res.clearCookie(name, options): Clear a cookie in the response.
+res.locals: An object to pass data to the view template engine.
+res.end(): End the response process.
+Note: can also be chained like res.status(201).send("ok");
+
+
+
