@@ -185,3 +185,31 @@ We can also prefix like versions of api,...
 ex:
 For http://localhost:3000/api/v1/todos/
 use the middleware app.use("/api/v1/todos",todosRouter);
+
+
+11.cookies
+Cookies are small pieces of data that a server --->user's web browser(stores them), 
+Cookies(are sent back to) --->server with each subsequent request, allowing the server to recognize the user or store small amounts of user-specific information like
+User Preferences: Store user preferences, such as language preference, theme, or display settings.
+Remember Me: For "Remember Me" functionality during login, you can store a persistent session identifier in a cookie.
+Authentication Tokens: Store short-lived authentication tokens (such as JWTs) to maintain user sessions across requests.
+Tracking and Analytics: Store tracking information for analytics and user behavior analysis.
+Shopping Cart: Store minimal cart information for e-commerce sites.
+Personalization: Store data used to personalize user experiences, like recently viewed items or recommended content.
+
+>npm install cookie-parser
+To set a cookie:(res obj as we are creating in server side)
+res.cookie('username', 'john', { maxAge: 900000, httpOnly: true })
+To get a cookie:(req obj as we are getting it from client side)
+req.cookies.username
+
+updated the index.js file with the code related to cookies
+Now test the endpoints
+http://localhost:3000/set-cookie
+check the cookies now with the name "username" has the value of 
+username=john; Path=/; HttpOnly; Expires=Tue, 08 Aug 2023 02:13:22 GMT;
+
+http://localhost:3000/get-cookie
+will get the username from cookies(if it has not expired)
+
+
