@@ -213,3 +213,28 @@ http://localhost:3000/get-cookie
 will get the username from cookies(if it has not expired)
 
 
+
+
+12.Sessions
+Cookies are limited to 4KB in size and lives in client side(prone to attacks).
+Sessions are a way to store user-specific data on the server side and associate it with a particular user. A session usually involves creating a unique session ID for each user, and this ID is stored in a cookie on the user's browser.
+
+What to store in sessions:
+User Authentication State: Store whether a user is logged in or not.
+User Profile Data: Store user-specific information that might be required across multiple pages, such as username, email, and user role.
+Sensitive Data: Store sensitive data that should not be exposed to the client, like server-side generated tokens or API keys.
+Temporary Data: Store temporary data that needs to be preserved across requests, like form data that spans multiple pages.
+Access Control Information: Store information about user roles and permissions.
+Cart and Order Data: Store comprehensive cart information, order history, and other e-commerce related data.
+
+In this example, I will remove the code from the previous chapter of cookies and will create a login route which uses both cookies(not to store sensitive data) and sessions.
+>npm i express-session
+Make the code changes according to this commit and temporary
+http://localhost:3000/auth/login
+Body/raw/JSON:
+{
+    "username":"user1",
+    "password":"password1"
+}
+and then try
+http://localhost:3000/auth/profile
