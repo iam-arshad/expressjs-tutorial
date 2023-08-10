@@ -238,3 +238,16 @@ Body/raw/JSON:
 }
 and then try
 http://localhost:3000/auth/profile
+
+
+
+
+13. Protected routes
+Session data itself is typically stored on the server's side in memory, a database, or another form of storage. The session identifier stored in the cookie is used to look up the corresponding session data on the server.
+
+In this chapter, we will make all the routes as protected routes(except auth routes like login,profile,logout) so that only authenticated users can be able to access other(todo,...) routes. We can modify the existing middleware function which was written in chapter 8 to check whether the user is loggedin or not.
+
+Mount the authRoute before mounting the loggedIn middleware.
+Now, if we try any of our todo routes or profile route, it will show that the user is not loggedIn.
+After logging in, all the other routes are accessible until we hit the logout request.
+
