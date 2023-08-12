@@ -1,3 +1,5 @@
+THIS IS JUST FOR MY REFERENECE BUT NOT TO TEACH ANYONE ELSE😂
+
 create a repo in github and clone it locally
 git clone https://github.com/iam-arshad/expressjs-tutorial.git
 
@@ -251,3 +253,28 @@ Mount the authRoute before mounting the loggedIn middleware.
 Now, if we try any of our todo routes or profile route, it will show that the user is not loggedIn.
 After logging in, all the other routes are accessible until we hit the logout request.
 
+
+
+14.MongoDB
+In this chapter, we will connect our application with the LOCAL mongodb database.For that, install the following softwares in your system
+1.MongoDB community server
+2.MongoDB shell
+3.MongoDB compass
+
+>npm i mongoose
+We will create 3 new files for this
+1.database/index.js(for local database connection)
+2.database/schemas/users.js(for creating schema of user collection)
+3.Using the above collection(in routes/auth/auth.js) for /register,/login routes in our application
+
+DONT FORGET TO IMPORT THE database/index.js FILE IN ENTRY FILE OF THE APPLICATION. SPENT 5-6HRS TO FIGUREOUT THE ISSUE😢
+postman:
+POST: http://localhost:3000/auth/register
+body/raw/JSON:
+{
+    "username":"mehatab@abc.com",
+    "password":"abc@0#ai"
+}
+For the first time, it will create a document(record) in the collection(table) "test".But if we try registering with the same username then  it will give 401 with "user already exists".
+We can check all these documents(records) of users in Compass or in mongodb shell.
+Note: These will be in local environment only but in the cloud(mongodb atlas dashboard).

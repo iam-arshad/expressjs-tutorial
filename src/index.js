@@ -3,6 +3,7 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const todosRouter=require("./routes/todos/todos");
 const authRouter=require("./routes/auth/auth");
+require("./database/index");
 const app=express()
 const PORT=3000
 

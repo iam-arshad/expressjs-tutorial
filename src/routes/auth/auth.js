@@ -1,6 +1,26 @@
 const {Router} = require('express');
+const User=require("../../database/schemas/users");
 
 const router = Router();
+
+router.post("/register",async (req,res)=>{
+  const {username,password}=req.body;
+  // console.log("/auth/register",username);
+
+  const userDB= await User.findOne({username:username});
+  if(userDB)
+  {
+    res.status(400).send({msg:"user already exists"})
+  }
+  else{
+    // for now we will store the raw password and in later sections we will store the hashed password In sha Allah 📚
+    const newUser= await User.create({username,password})
+    // console.log(newUser)
+    // login the user here...
+    res.status(201).send("Registered Successfully");
+  }
+})
+
 
 // In the next few chapters, this will be handled using a DB In sha Allah😊
 const users = [
