@@ -275,6 +275,16 @@ body/raw/JSON:
     "username":"mehatab@abc.com",
     "password":"abc@0#ai"
 }
-For the first time, it will create a document(record) in the collection(table) "test".But if we try registering with the same username then  it will give 401 with "user already exists".
+For the first time, it will create a document(record) in the collection(table) "users".But if we try registering with the same username then  it will give 401 with "user already exists".
 We can check all these documents(records) of users in Compass or in mongodb shell.
 Note: These will be in local environment only but in the cloud(mongodb atlas dashboard).
+
+
+15. Auth routes integration with MongoDB
+In general, no one will save the raw passwords in the db.Passwords will be encripted(original password can be retrieved) or hashed(original password cant be retrieved) and then saved into the db. Everytime when the user logs in, the raw password entered by the user will be hashed and then we will compare this hashed value and the already hashed value in the db.For this, we will use bcript library.
+As we use these hashPassword and comparePassword and to login the user very often, I have kept the code related to this in utils directory.
+Update the code as per this commit and try 
+a.registering,loggingIn,profile,logout routes.
+b.Try to access todo routes before registering/loggingIn just to check that they are protected
+c.Do the same after registering/loggingIn.
+
