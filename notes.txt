@@ -1,5 +1,14 @@
 THIS IS JUST FOR MY REFERENECE BUT NOT TO TEACH ANYONE ELSE😂
 
+Express is not only for creating api's but also for
+✔ Authentication and Authorization
+✔ Server side rendering(using template engines like pug,ejs,...)
+✔ Single page apps
+✔ Proxy servers(to act as a temporary server which routes to specific server based on type of req)
+✔ To build real world apps like chat applications using socket.io
+✔To build microservices
+
+
 create a repo in github and clone it locally
 git clone https://github.com/iam-arshad/expressjs-tutorial.git
 
@@ -64,6 +73,7 @@ ex:
 http://localhost:3000/todos/1
 http://localhost:3000/todos/2
 >req.params
+NOTE:Make sure that the route with url params should have to be at the bottom(in order to not to affect other routes)
 
 
 5a.PUT request
@@ -288,3 +298,26 @@ a.registering,loggingIn,profile,logout routes.
 b.Try to access todo routes before registering/loggingIn just to check that they are protected
 c.Do the same after registering/loggingIn.
 
+
+16. Rendering HTML with a template engine
+Template engine is a part of Express that enables us to use static files in our applications.Template engine converts variables to values and changes the template to HTML files to send to the client.
+Ex: ejs, pug,...
+Here in this tutorial we will use ejs template engine to render the home,register,login pages so that we can access our application from a WEB BROWSER.
+
+In the home page(https://localhost:3000) we will display a h1 and if the user is
+👆 logged in, we will display his username(will be passed from src/index.js to src/views/index.ejs)
+👆 not logged in, will display 2 buttons to register,login pages
+
+>npm i ejs
+create a directory(views) in src directory
+We will use the same pattern for ejs files, as we have used for routes like src/views/auth contains register.ejs,login.ejs
+
+
+When sending different types of responses like res.render(),res.redirect(),res.json(),... among which we can use only one at a time
+which will make us difficult to use our app from postman(to send data) and also from a web browser(to render,redirect)
+So, we have a request header req.get("User-Agent") which gives us the client name.Based on the client we can modify our api to work for both a web browser as well as postman.
+
+Summary:
+1.create a html forms for home(http://localhost:3000),register(http://localhost:3000/auth/register) and login(http://localhost:3000/auth/login) ejs files. 
+2.create a get request(src/routes/auth/auth.js) and render form from there
+3.In browser, on submission will hit the POST call of that form's action attribute

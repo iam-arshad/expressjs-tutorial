@@ -7,6 +7,10 @@ require("./database/index");
 const app=express()
 const PORT=3000
 
+// set the template engine and the directory for forms
+app.set('view engine', 'ejs');
+app.set('views', __dirname + '/views');
+
 
 // Remember that secret keys should remain secret and not be exposed in your codebase, configuration files, or version control. Regularly rotate your secret keys for better security.
 app.use(session({
@@ -20,6 +24,15 @@ app.use(session({
 app.use(cookieParser());
 app.use(express.json())
 app.use("/auth",authRouter);
+
+// home page route using ejs template engine to view from a browser
+// http://localhost/3000
+app.get("/", (req, res) => {
+  let username = req.cookies.username;
+  // passing username to the ejs view file
+  res.render("index", { username });
+});
+
 
 // Custom Middleware to check whether a user a loggedIn or not
 const loggedInMiddleware = function(req, res, next) {

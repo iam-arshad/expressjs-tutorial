@@ -1,8 +1,17 @@
+const express=require("express");
 const { Router } = require('express');
 const User = require("../../database/schemas/users");
 const { hashPassword, comparePassword, setLoggedInUserAndCookie } = require("../../utils/authUtils");
 const router = Router();
 
+// to render /register form from ejs template engine
+router.get("/register",(req,res)=>{
+  // render src/views/auth/register.ejs
+  res.render("auth/register");
+})
+
+
+router.use(express.urlencoded({extended:true}));
 // POST:http://localhost:3000/auth/register
 router.post("/register", async (req, res) => {
   const { username, password } = req.body;
@@ -26,6 +35,11 @@ router.post("/register", async (req, res) => {
 });
 
 
+// to render /login form from ejs template engine
+router.get("/login",(req,res)=>{
+  res.render("auth/login");
+})
+
 
 // POST:http://localhost:3000/auth/login
 router.post('/login', async (req, res) => {
@@ -42,7 +56,15 @@ router.post('/login', async (req, res) => {
   
   // login the user
   setLoggedInUserAndCookie(req, res, user);
-  return res.status(200).json({ message: "Login successful" });
+  
+  // send different types of responses to different clients
+  const userAgent = req.get('User-Agent');
+  if (userAgent.includes('Postman')) {
+    return res.status(200).json({ message: "Login successful" });
+  }
+  else{
+    res.redirect("/");
+  }
 });
 
 

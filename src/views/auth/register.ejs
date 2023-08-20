@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <!-- onSubmit will call POST:http://localhost:3000/auth/register -->
+    <form action="/auth/register" method="post">
+        <div>
+            <label for="name">Name</label>
+            <input type="type" name="name" id="name">
+        </div>
+        <div>
+            <label for="email">Email</label>
+            <input type="email" name="username" id="email">
+        </div>
+        <div>
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password">
+        </div>
+        <button type="submit">Register</button>
+    </form>
+</body>
+
+</html>
