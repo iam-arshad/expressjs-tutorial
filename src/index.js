@@ -1,9 +1,11 @@
 const express=require("express")
+const passport = require("passport");
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const todosRouter=require("./routes/todos/todos");
 const authRouter=require("./routes/auth/auth");
 require("./database/index");
+require("./strategies/local");
 const app=express()
 const PORT=3000
 
@@ -20,9 +22,13 @@ app.use(session({
   cookie: { maxAge: 600000 }
 }));
 
+app.use(passport.initialize())
+app.use(passport.session())
+
 // Middleware to parse cookies
 app.use(cookieParser());
-app.use(express.json())
+app.use(express.json());
+app.use(express.urlencoded({extended:true}));
 app.use("/auth",authRouter);
 
 // home page route using ejs template engine to view from a browser
@@ -44,7 +50,7 @@ const loggedInMiddleware = function(req, res, next) {
   };
   
 // Using the custom middleware
-app.use(loggedInMiddleware);
+// app.use(loggedInMiddleware);
 
 
 // Mount the todoRouter at '/todos' as a middleware

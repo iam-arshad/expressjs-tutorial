@@ -7,7 +7,7 @@ async function hashPassword(password) {
 }
 
 // A utility function to compare a plain password with a hashed password
-async function comparePassword(plainPassword, hashedPassword) {
+async function comparePasswords(plainPassword, hashedPassword) {
     return await bcrypt.compare(plainPassword, hashedPassword);
 }
 
@@ -22,6 +22,6 @@ function setLoggedInUserAndCookie(req, res, user) {
 
 module.exports = {
     hashPassword,
-    comparePassword,
+    comparePasswords,
     setLoggedInUserAndCookie
 };

@@ -292,7 +292,7 @@ Note: These will be in local environment only but in the cloud(mongodb atlas das
 
 15. Auth routes integration with MongoDB
 In general, no one will save the raw passwords in the db.Passwords will be encripted(original password can be retrieved) or hashed(original password cant be retrieved) and then saved into the db. Everytime when the user logs in, the raw password entered by the user will be hashed and then we will compare this hashed value and the already hashed value in the db.For this, we will use bcript library.
-As we use these hashPassword and comparePassword and to login the user very often, I have kept the code related to this in utils directory.
+As we use these hashPassword and comparePasswords and to login the user very often, I have kept the code related to this in utils directory.
 Update the code as per this commit and try 
 a.registering,loggingIn,profile,logout routes.
 b.Try to access todo routes before registering/loggingIn just to check that they are protected
@@ -321,3 +321,30 @@ Summary:
 1.create a html forms for home(http://localhost:3000),register(http://localhost:3000/auth/register) and login(http://localhost:3000/auth/login) ejs files. 
 2.create a get request(src/routes/auth/auth.js) and render form from there
 3.In browser, on submission will hit the POST call of that form's action attribute
+
+
+17.a.Passport.js Local Strategy
+As of now, we have written our custom code for user Authorization which includes 
+for login(post) route:storing user's data in session and cookies,
+For logout(get) route: removing the user's data in session and cookies,
+for dashboard(get) route:getting user's data from session and cookies,
+custom middleware for protected routes
+
+Not only these, we can get all these(plus some additional features) using another technique by default if we implement Passport.js Local Strategy.
+✒Passport.js is a popular authentication middleware for Node.js applications, and it provides various authentication strategies, including the Local Strategy. The Local Strategy is used for authenticating users based on a username and password stored in your application's database.
+✒Serialization is the process of converting a user object(eg.,user id) into a format that can be easily stored, typically in a session. This process is performed when a user logs in, and their user data needs to be saved in the session for future requests. Serialization allows Passport.js to identify the user during subsequent requests.
+✒Deserialization is the process of retrieving user information from the session and converting it back into a user object. This is essential when handling subsequent requests from authenticated users.
+✒structure of done method: done(error,user obj,msg)
+
+>npm i passport passport-local
+👆All the setup for passport.js Local Strategy was implemented in src/strategies/local.js
+👆Modify post login route handler with the passport.js local strategy route handler(with routes to successful & unsuccessful login)
+👆import local strategy file in src/index.js and add middlewares(initialize passport,passport session)
+
+Now,run the application,http://localhost:3000
+and try to login with the credentials,for
+✔successful login, it will route to http://localhost:3000/todos,
+❌for failed login, it will route to http://localhost:3000/auth/login
+
+NOTE: For now, I have commented the loggedInMiddleware middleware in src/index.js and in the furthur chapters we can use the built in features of Passport.js for authentication,logout,profile,.... In sha Allah😊
+
