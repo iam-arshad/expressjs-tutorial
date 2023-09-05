@@ -348,3 +348,11 @@ and try to login with the credentials,for
 
 NOTE: For now, I have commented the loggedInMiddleware middleware in src/index.js and in the furthur chapters we can use the built in features of Passport.js for authentication,logout,profile,.... In sha Allah😊
 
+
+
+17.b. Passport.js Local Strategy features
+👆For protected routes, we can use req.isAuthenticated() which return a boolean value
+👆If the user is already logged in, we need to redirect the user to home page(if the user tries get/post methods of register,login routes)
+👆For logout route, use res.logout((err)=>{...}) method and redirect the user to login page
+
+

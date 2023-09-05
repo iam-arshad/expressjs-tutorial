@@ -19,7 +19,7 @@ app.use(session({
   secret: 'your-secret-key',
   resave: false,
   saveUninitialized: true,
-  cookie: { maxAge: 600000 }
+  cookie: { maxAge: 2*60*1000 }
 }));
 
 app.use(passport.initialize())
@@ -34,7 +34,7 @@ app.use("/auth",authRouter);
 // home page route using ejs template engine to view from a browser
 // http://localhost/3000
 app.get("/", (req, res) => {
-  let username = req.cookies.username;
+  let username = req.user?.username;
   // passing username to the ejs view file
   res.render("index", { username });
 });
@@ -42,15 +42,12 @@ app.get("/", (req, res) => {
 
 // Custom Middleware to check whether a user a loggedIn or not
 const loggedInMiddleware = function(req, res, next) {
-  if (!req.session?.loggedIn) {
-    res.status(401).send('You are not logged in');
-    return;
+  if (req.isAuthenticated()) {
+    return next();
   }
-    next();// Call next to pass the control to the next middleware
-  };
-  
-// Using the custom middleware
-// app.use(loggedInMiddleware);
+  else return res.redirect("/auth/login");
+}
+app.use(loggedInMiddleware);
 
 
 // Mount the todoRouter at '/todos' as a middleware

@@ -1,19 +1,29 @@
-const express=require("express");
+const express = require("express");
 const { Router } = require('express');
 const User = require("../../database/schemas/users");
 const { hashPassword, setLoggedInUserAndCookie } = require("../../utils/authUtils");
 const passport = require("passport");
 const router = Router();
 
+// prevent user from get,post methods of register,login(but not profile,logout) routes if already logged in
+const isAlreadyLoggedIn = function (req, res, next) {
+  if (req.isAuthenticated()) {
+    return res.redirect("/")
+  }
+  else {
+    next();
+  }
+}
+
 // to render /register form from ejs template engine
-router.get("/register",(req,res)=>{
+router.get("/register", isAlreadyLoggedIn, (req, res) => {
   // render src/views/auth/register.ejs
   res.render("auth/register");
 })
 
 
 // POST:http://localhost:3000/auth/register
-router.post("/register", async (req, res) => {
+router.post("/register", isAlreadyLoggedIn, async (req, res) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
@@ -36,37 +46,27 @@ router.post("/register", async (req, res) => {
 
 
 // to render /login form from ejs template engine
-router.get("/login",(req,res)=>{
+router.get("/login", isAlreadyLoggedIn, (req, res) => {
   res.render("auth/login");
 })
 
 
 // POST:http://localhost:3000/auth/login
-router.post('/login',passport.authenticate("local",{successRedirect:"/todos",failureRedirect:"/auth/login"}));
+router.post('/login', isAlreadyLoggedIn, passport.authenticate("local", { successRedirect: "/todos", failureRedirect: "/auth/login" }));
 
 
 // GET:http://localhost:3000/auth/profile
 router.get('/profile', (req, res) => {
-  if (!req.session.loggedIn) {
-    res.status(401).send('You are not logged in');
-    return;
-  }
-  res.send(`Welcome to your profile, ${req.cookies.username}`);
+  res.send(`Welcome to your profile, ${req.user}`);
 });
 
 
-// logout route to clear cookies,session
 // GET:http://localhost:3000/auth/logout
 router.get("/logout", (req, res) => {
-  if (!req.session.loggedIn) {
-    res.status(401).send('You are not logged in');
-    return;
-  }
-
-  req.session.destroy();
-  res.clearCookie('username');
-  // res.redirect("/login");
-  res.send("Good Bye!..")
+  req.logout(function (err) {
+    if (err) return next(err);
+    res.redirect('/');
+  });
 })
 
 module.exports = router;
