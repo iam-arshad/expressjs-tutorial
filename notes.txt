@@ -356,3 +356,5 @@ NOTE: For now, I have commented the loggedInMiddleware middleware in src/index.j
 👆For logout route, use res.logout((err)=>{...}) method and redirect the user to login page
 
 
+17.c. Logging in the user after successful registration
+👆 Use passport.js's req.login(user,(err)=>{...}) method to login the user after successful registration.

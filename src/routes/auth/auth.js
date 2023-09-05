@@ -38,10 +38,14 @@ router.post("/register", isAlreadyLoggedIn, async (req, res) => {
   const hashedPassword = await hashPassword(password);
   const newUser = await User.create({ username, password: hashedPassword });
 
-  // login the user here...
-  setLoggedInUserAndCookie(req, res, newUser);
-
-  return res.status(201).json({ message: "Registration successful" });
+  // login the user here(by passport.js's req.login())...
+  req.login(newUser, (err) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Internal server error');
+    }
+    return res.redirect('/'); // Redirect to home page indicating successful registration and login
+  });
 });
 
 
