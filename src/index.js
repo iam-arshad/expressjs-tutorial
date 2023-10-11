@@ -2,10 +2,16 @@ const express=require("express")
 const passport = require("passport");
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
+const dotenv= require("dotenv");
 const todosRouter=require("./routes/todos/todos");
 const authRouter=require("./routes/auth/auth");
 require("./database/index");
 require("./strategies/local");
+
+dotenv.config(); //load env variables before executing the google oauth2 functionality
+require("./strategies/googleOAuth2");
+
+
 const app=express()
 const PORT=3000
 

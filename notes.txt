@@ -358,3 +358,52 @@ NOTE: For now, I have commented the loggedInMiddleware middleware in src/index.j
 
 17.c. Logging in the user after successful registration
 👆 Use passport.js's req.login(user,(err)=>{...}) method to login the user after successful registration.
+
+
+18. Passport Google OAuth2 Strategy
+
+In some websites, we might have seen like sign in with google/microsoft/apple/github account instead of signing up with a username & password. In some websites, we can upload files to that website directly from the drive. we When its signing up with a google account then that mechanism is called as Google OAuth2. It allows users to grant limited access to their resources without sharing their credentials, like usernames and passwords, with the third-party applications.
+
+Google OAuth2 is an authentication and authorization framework provided by Google that allows third-party applications to access a user's Google services, such as Gmail, Google Drive, Google Calendar, and more, on their behalf. OAuth2 (short for "Open Authorization 2.0") is a widely used industry standard for secure authorization and authentication.
+
+Here's how Google OAuth2 works:
+a.User Consent(Allow/Deny): When a user wants to use a third-party application that requires access to their Google services, the application redirects the user to Google's authentication system. The user is asked to grant permissions to the application to access specific data or services.
+b.Authentication: The user is prompted to sign in with their Google credentials
+c.Authorization: After logging in, the user is presented with a consent screen, which details the specific permissions the third-party application is requesting (e.g., read access to Gmail, write access to Google Calendar). The user can either grant or deny these permissions.
+d.Access Tokens: If the user grants permission, Google generates an access token. This token is provided to the third-party application. The application can then use this token to make requests to Google's APIs on behalf of the user.
+e.Refreshing Tokens: Access tokens have a limited lifespan. To maintain access, the application can use a refresh token (if provided during the initial authorization). This allows the application to obtain a new access token without the user's involvement.
+
+We need to do some initial setup in Google cloud console.
+https://console.cloud.google.com
+✅Create a Project in Google Cloud Platform:
+Create a new project or select an existing one where you want to set up OAuth2.
+
+✅Enable some api's in the project:
+for example: project/Api's & services/Enable Api's & services/(search for)Youtube Data API/Enable
+
+✅As discussed earlier, we need to ask permission for the email,profile of a user. So we need to get access for them.
+A.project/Api's & services/credentials/create credentials/oAuth client ID/configure consent screen/external/create/fill the form
+B.scopes(will be based on the api's enabled)
+Ex: email,profile,...
+C.Test Users
+add email id
+D.click on dashboard
+
+✅create client Id and client secret
+project/Api's & services/credentials/create credentials/oAuth clientID/web app'n & name(give the name of the app here)/create
+
+✅Add a redirect url(to redirect to that url after successful authorization)
+project/Api's & services/credentials/OAuth2 clientID/Authorize redirect url/(enter the url here Ex: http://localhost:3000/auth/api/google/redirect)/save
+
+>npm i passport-google-oauth20 dotenv
+
+Instead of storing our clientID,secret,... in the code I am storing them in environment variables.So that we can use them in runtime using dotenv npm package which takes values from a .env file and loads them into process.env when the application runs.
+
+SCENARIO: In our app, we will register the new users with their google account and will save their email id(as username) and googleId.
+
+
+19.JWT
+
+20.static pages
+
+21.

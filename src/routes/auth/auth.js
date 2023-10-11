@@ -58,6 +58,15 @@ router.get("/login", isAlreadyLoggedIn, (req, res) => {
 // POST:http://localhost:3000/auth/login
 router.post('/login', isAlreadyLoggedIn, passport.authenticate("local", { successRedirect: "/todos", failureRedirect: "/auth/login" }));
 
+// google oauth2 authentication route
+router.get("/google",passport.authenticate("google",{ scope: ['profile', 'email'] }))
+
+// Google OAuth 2.0 callback URL
+router.get('/api/google/redirect', passport.authenticate('google', { failureRedirect: '/' }), (req, res) => {
+  // Successful authentication, redirect to a different route or respond as needed.
+  // console.log(req.user);
+  res.redirect('/auth/profile');
+});
 
 // GET:http://localhost:3000/auth/profile
 router.get('/profile', (req, res) => {
