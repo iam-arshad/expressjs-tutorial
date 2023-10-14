@@ -5,15 +5,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        .success-flash-msg{
+            background: #a9d5a9;
+            width: 80%;
+            padding: 1%;
+            margin: 2% auto;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
 </head>
 
 <body>
 
     <h1>ToDo App</h1>
+
+    <!-- flash message if the user successfully logs out -->
+    <% if (locals.success) { %>
+        <div class="success-flash-msg">
+          <%= locals.success %>
+          <button type="button" onclick="this.parentElement.remove()">X</button>
+        </div>
+    <% } %>
+
     <!-- if not logged in -->
     <% if (!locals.username) { %>
-        <button onclick='window.location.href="/auth/register"'>Register</button>
-        <button onclick='window.location.href="/auth/login"''>Login</button>
+        <button type="button" onclick='window.location.href="/auth/register"'>Register</button>
+        <button type="button" onclick='window.location.href="/auth/login"''>Login</button>
     <!-- if logged in  -->
     <% }else{ %>
         Hello <%= locals.username%>

@@ -3,10 +3,12 @@ const passport = require("passport");
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const dotenv= require("dotenv");
+const flash=require("connect-flash");
 const todosRouter=require("./routes/todos/todos");
 const authRouter=require("./routes/auth/auth");
 require("./database/index");
 require("./strategies/local");
+
 
 dotenv.config(); //load env variables before executing the google oauth2 functionality
 require("./strategies/googleOAuth2");
@@ -35,14 +37,17 @@ app.use(passport.session())
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
+app.use(flash());
 app.use("/auth",authRouter);
 
 // home page route using ejs template engine to view from a browser
 // http://localhost/3000
 app.get("/", (req, res) => {
   let username = req.user?.username;
+
+  let flashMessage = req.flash('success');
   // passing username to the ejs view file
-  res.render("index", { username });
+  res.render("index", { username:username, success: flashMessage.length > 0 ? flashMessage : null });
 });
 
 

@@ -402,8 +402,27 @@ Instead of storing our clientID,secret,... in the code I am storing them in envi
 SCENARIO: In our app, we will register the new users with their google account and will save their email id(as username) and googleId.
 
 
-19.JWT
 
-20.static pages
 
-21.
+19.flash messages using connect-flash
+>npm i connect-flash
+connect-flash is a library which allows you to flash messages whenever you are redirected to another webpage. Typically, when you log in to a website, a message would ‘flash’ on top of your screen indicating your success or failure in logging in.
+
+Note: The flash message is stored in the session and typically used for redirects only. Moreover, the flash message is intended to be flashed once and then removed from the session store. This makes sense because if the session store started accumulating these flash messages, your app would run into issues with memory.
+
+set the flash message in one route before redirection with req.flash("key","msg...")
+and redirect to another route
+and display the flash message(which was stored in session) using req.flash("key") in that redirected route
+will be removed,if we refresh the page
+
+in "auth/logout", we are setting flash message before redirection
+in "/", we are using the flash message which is there in request object(can be used here itself/ can be sent to ejs file).
+
+
+
+
+20.JWT
+
+21.static pages
+
+22.

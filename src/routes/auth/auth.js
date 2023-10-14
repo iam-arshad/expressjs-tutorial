@@ -78,6 +78,7 @@ router.get('/profile', (req, res) => {
 router.get("/logout", (req, res) => {
   req.logout(function (err) {
     if (err) return next(err);
+    req.flash('success', 'logged out successfully!');
     res.redirect('/');
   });
 })
