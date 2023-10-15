@@ -27,7 +27,7 @@ app.use(session({
   secret: 'your-secret-key',
   resave: false,
   saveUninitialized: true,
-  cookie: { maxAge: 2*60*1000 }
+  cookie: { maxAge: 10*60*1000 }
 }));
 
 app.use(passport.initialize())
@@ -64,5 +64,7 @@ app.use(loggedInMiddleware);
 // Mount the todoRouter at '/todos' as a middleware
 app.use("/todos",todosRouter);
 
+// to serve static files
+app.use(express.static("public"));
 
 app.listen(PORT,()=>console.log(`express server running on port ${PORT}`))

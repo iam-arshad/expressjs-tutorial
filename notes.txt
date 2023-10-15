@@ -421,8 +421,30 @@ in "/", we are using the flash message which is there in request object(can be u
 
 
 
-20.JWT
+20.serve static files
+To serve static files such as images, CSS files, and JavaScript files, use the express.static built-in middleware function in Express.
 
-21.static pages
+Ex: use the following code to serve images, CSS files, and JavaScript files in a directory named "public"
+app.use(express.static('public'))
 
-22.
+project-directory/
+  └── public/
+      ├── html
+          ├──about.html
+      ├── images
+            ├──a.png
+            ├──b.png
+      └── script.js
+
+Now, you can load the files that are in the public directory:
+http://localhost:3000/images/a.png
+http://localhost:3000/images/b.png
+http://localhost:3000/html/about.html
+http://localhost:3000/script.js
+
+
+To serve in a specific route, use prefix like app.use("/static",express.static("public"));
+http://localhost:3000/static/images/a.png
+http://localhost:3000/static/images/b.png
+
+
