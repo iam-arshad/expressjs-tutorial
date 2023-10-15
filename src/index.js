@@ -67,4 +67,12 @@ app.use("/todos",todosRouter);
 // to serve static files
 app.use(express.static("public"));
 
+// err parameter is the newly added parameter from the previous middleware(by next(errorMessage))
+function errorHandler(err, req, res, next) {
+  // console.error(err);
+  res.status(err.status || 500);
+  res.json({error: { message: err.message || 'Internal Server Error'}});
+}
+app.use(errorHandler);
+
 app.listen(PORT,()=>console.log(`express server running on port ${PORT}`))

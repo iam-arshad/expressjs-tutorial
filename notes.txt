@@ -448,3 +448,17 @@ http://localhost:3000/static/images/a.png
 http://localhost:3000/static/images/b.png
 
 
+
+
+
+21.Error handling middleware
+In Express, error handling middleware is used to handle errors that occur during the execution of your application. It's crucial for improving the robustness and reliability of your application.
+
+The error handling middleware are defined in the same way as other middleware functions, except that error-handling functions MUST have four arguments instead of three – err, req, res, next.
+
+✅created an api at /todos/example by throwing an error and by calling next(err)
+✅created an error handling middleware in src/index.js
+
+IT SHOULD HAVE TO BE AFTER ALL THE ROUTES IN THE END
+BUT BEFORE THE SERVER LISTENER
+
