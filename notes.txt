@@ -462,3 +462,62 @@ The error handling middleware are defined in the same way as other middleware fu
 IT SHOULD HAVE TO BE AFTER ALL THE ROUTES IN THE END
 BUT BEFORE THE SERVER LISTENER
 
+
+22a. Protected routes using JWT
+In sessions, we will create a session in server and stores some data in it and then we will send that id of session to the client and the client will send that session_id to the server for every subsequent request(generally for authentication,to retrieve some session data,...).
+Due to the below reasons, maintaining sessions in the server is not encouraged
+a.makes them hard to scale your application horizontally by adding more server instances.(needs server storage)
+b.security
+...
+
+JWT, or JSON Web Tokens, is to securely transmit information between parties as a JSON object. 
+We can send a JWT(JSON obj) to a user on login and can can verify on other protected routes(eg:profile route) that the user is authenticated.They are commonly used for authentication and authorization in web applications, including Express.js applications.
+
+Unlike sessions, we will not store anything in the server. On login, we will create(with some data in it) and will send an access token(a JWT) to the user in the encoded form and the client has to send(headers/authorization) that access token on every subsequent request. So that we can decode that JWT(by making sure that its a valid one) and can reuse the data present in the JWT like the loggedIn user,user's id,...
+
+general format of a JWT is [header].[payload].[signature]
+ex: eyJhzVCJ9.eyJpZCI6IjY1M.CkuDkZYapgF
+If we modify its value, then JWT will be invalid
+
+we can decode that JWT in https://jwt.io/
+Decoded JWT ex:
+HEADER:
+{
+  "alg": "HS256",
+  "typ": "JWT"
+}
+PAYLOAD:
+{
+  "id": "652a10cabbd4d164681436fa",
+  "username": "a@a.com",
+  "iat": 1697893868,
+  "exp": 1697897468,
+  ......
+  ......
+}
+VERIFY_SIGNATURE:{
+HMACSHA256(
+  base64UrlEncode(header) + "." +
+  base64UrlEncode(payload),
+  your-256-bit-secret)
+}
+
+
+Real world usecases of JWT:
+Other than authorization and data exchange, we can use JWT in the scenarios like
+1.To authenticate in all microservices(in an app) with a single login(ex:google login-->mail,maps,drive,keep,contacts,....)
+2.To authenticate in all the server instances(if one server got loaded,then the user should not have to login if the user is redirected to another server instance by the load balancer)
+
+In our app'n,
+we will send an access token jwt(which contains user's id and username) to the user on logging in
+will make the profile route authenticated and can only be accessed with an access token in the req header
+
+To create a JWT, we will use sign({data},secret,[{expiresIn: '1h',.......}]) method
+To verify it in protected routes, we will use verify(accessToken,secret,(err,data)=>{}) method
+from jsonwebtoken npm package
+Note: for more about the additional parameters to these methods,refer https://www.npmjs.com/package/jsonwebtoken
+
+>npm i jsonwebtoken
+Testing:
+In postman, /login will give an access token
+give that access token as Authorization header in /profile and make the request
