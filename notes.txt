@@ -521,3 +521,26 @@ Note: for more about the additional parameters to these methods,refer https://ww
 Testing:
 In postman, /login will give an access token
 give that access token as Authorization header in /profile and make the request
+
+
+
+
+22b. refresh token using JWT
+Our access token will be expired after the time we have specified in jwt.sign(). If we want to give access to the protected routes to the users even after the access token is expired, we need to use refresh token. After logging in, we will send the accessToken(which will be expired) and the refreshToken(which will not expire,but used to retrieve a new accessToken when the previous one is expired & also all the refreshTokens will be saved to our mongodb collection for that user document).
+
+we will create another route at /token to send the new accessToken(when the previous accessToken expires) by verifying the refreshToken(which was sent through req.body).
+
+In our application,
+Generally in our app'n, user will be logged in upto 1hr as we have maxAge 1hr in the session middleware in src/index.js.
+/login will give accessToken(which will be expired after 30secs) & refreshToken(which will not expire)
+User can access the protected route /profile as long as the accessToken is'nt expired.
+Once the accessToken is expired, user can get a new accessToken from /token by sending the refreshToken
+
+Test(in Postman):
+/login -->AT,RT
+/profile can be accessed as long as the accessToken is not expired
+once the accessToken is expired, user will not be able to access the protected route /profile
+/token(RT)-->new AT
+with the new AT, user can access the /profile again.
+
+

@@ -57,12 +57,35 @@ router.get("/login", isAlreadyLoggedIn, (req, res) => {
 
 
 // POST:http://localhost:3000/auth/login
-router.post('/login', isAlreadyLoggedIn, passport.authenticate("local", { failureRedirect: "/auth/login" }), (req, res) => {
+router.post('/login', isAlreadyLoggedIn, passport.authenticate("local", { failureRedirect: "/auth/login" }), async (req, res) => {
   // User authenticated, generate a JWT
-  const user = req.user; // Assuming you have the user object in the request
-  const accessToken = jwt.sign({ id: user.id, username: user.username }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
-  res.json({ token: accessToken });
+  const user = req.user; // user object will be in the request object when passport local is used
+  const accessToken = jwt.sign({ id: user.id, username: user.username }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: 30 });
+  const refreshToken = jwt.sign({ id: user.id, username: user.username }, process.env.REFRESH_TOKEN_SECRET);
+
+  //updating the refreshToken in the db
+  await User.findOneAndUpdate({ username: user.username }, { $push: { refreshTokens: refreshToken } });
+  res.json({ accessToken, refreshToken });
 });
+
+router.post("/token", async (req, res) => {
+  const { refreshToken } = req.body;
+  const user = await User.findOne({ 'refreshTokens': refreshToken })
+
+  // if refresh token not found for any of the users
+  if (!user) {
+    return res.status(401).json({ error: 'Invalid refresh token' });
+  }
+
+  // verify the refreshToken is valid or not
+  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, data) => {
+    if (err) {
+      res.sendStatus(403);
+    }
+    const accessToken = jwt.sign({ username: data.username }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: 50 })
+    res.json({ accessToken });
+  })
+})
 
 // google oauth2 authentication route
 router.get("/google", passport.authenticate("google", { scope: ['profile', 'email'] }))
@@ -77,7 +100,7 @@ router.get('/api/google/redirect', passport.authenticate('google', { failureRedi
 // middleware to verify the accessToken
 function verifyToken(req, res, next) {
   if (!req.isAuthenticated()) {
-    return res.status(401).send("You're not logged in")
+  return res.status(401).send("You're not logged in")
   }
 
   // 'Bearer eyJhzVCJ9.eyJpZCI6IjY1M.CkuDkZYapgF'
