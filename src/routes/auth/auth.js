@@ -100,7 +100,7 @@ router.get('/api/google/redirect', passport.authenticate('google', { failureRedi
 // middleware to verify the accessToken
 function verifyToken(req, res, next) {
   if (!req.isAuthenticated()) {
-  return res.status(401).send("You're not logged in")
+    return res.status(401).send("You're not logged in")
   }
 
   // 'Bearer eyJhzVCJ9.eyJpZCI6IjY1M.CkuDkZYapgF'
@@ -122,12 +122,18 @@ router.get('/profile', verifyToken, (req, res) => {
 
 
 // GET:http://localhost:3000/auth/logout
-router.get("/logout", (req, res) => {
-  req.logout(function (err) {
-    if (err) return next(err);
-    req.flash('success', 'logged out successfully!');
-    res.redirect('/');
-  });
+router.get("/logout", async (req, res) => {
+  try{
+    await User.findOneAndUpdate({ username: req.user.username }, { $set: { refreshTokens: [] } }); //empty the refreshTokens array
+    req.logout(function (err) {
+      if (err) return next(err);
+      req.flash('success', 'logged out successfully!');
+      res.redirect('/');
+    });
+  }
+  catch(e){
+    return next(e);
+  }
 })
 
 module.exports = router;

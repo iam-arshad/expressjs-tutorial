@@ -544,3 +544,47 @@ once the accessToken is expired, user will not be able to access the protected r
 with the new AT, user can access the /profile again.
 
 
+
+
+22c. Log out functionality with JWT
+NOw, we need to invalidate the accessToken and the refreshToken. Generally if the user logs out, we are logging them out using passportjs's method request.logout() which will prevent the user from accessing routes other than register & login. 
+
+For 
+a)additional security(to invalidate the refreshTokens)
+b)to remove unnecessary refreshTokens which are there in the database for that user's document
+we need to invalidate those refreshTokens from furthur being used.
+
+Test(In postman/Browser):
+/login
+/profile(AT)
+...
+/logout
+
+Note:
+Imagine a scenario where the user logs into his account in different devices/clients/sessions/...To logout the user 
+a)from a specific session/client/... or 
+b)from all the sessions/clients/...
+we need to change the schema as below and should have to remove that clients specific/all refreshTokens
+
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+// Define the Device schema
+const deviceSchema = new Schema({
+  deviceId: String,
+  refreshTokens: [String], // Array of refresh tokens associated with this device
+});
+
+// Define the User schema
+const userSchema = new Schema({
+  username: String,
+  password: String,
+  googleId: String,
+  devices: [deviceSchema], // Array of devices associated with the user
+});
+
+// Create a model for the User collection
+const User = mongoose.model('User', userSchema);
+module.exports = User;
+
+
