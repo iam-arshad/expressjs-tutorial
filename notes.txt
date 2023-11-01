@@ -588,3 +588,27 @@ const User = mongoose.model('User', userSchema);
 module.exports = User;
 
 
+23. a)Testing express app with plain jest
+prerequisites: jest
+
+>npm i -D jest
+>npx jest --init
+
+In jest.config.js: 
+uncomment the block
+testMatch: [
+    "**/__tests__/**/*.[jt]s?(x)",
+    "**/?(*.)+(spec|test).[tj]s?(x)"
+  ],
+
+In my 3 years of experience, I can say that
+In manual testing, we can cover almost most of the scenarios, but when a small change is made later on, then in order to test that the existing functionality of other components is not affected, writing test cases will be helpful.
+
+IN our express app, all the route handlers are anonymous functions which cant be exported for testing. So I have created a directory(controllers) in src directory and in a file I have pasted the passportjs's verify function and is exported to the src/strategies/local.js
+
+Now in test files,
+__tests__/controllers/strategies/localStrategyAuth.test.js
+I am importing that file and will be writing the testcases for it.
+
+>npm run test [fileName]
+

@@ -94,7 +94,7 @@ router.get("/google", passport.authenticate("google", { scope: ['profile', 'emai
 router.get('/api/google/redirect', passport.authenticate('google', { failureRedirect: '/' }), (req, res) => {
   // Successful authentication, redirect to a different route or respond as needed.
   // console.log(req.user);
-  res.redirect('/auth/profile');
+  res.redirect('/');
 });
 
 // middleware to verify the accessToken
@@ -104,7 +104,7 @@ function verifyToken(req, res, next) {
   }
 
   // 'Bearer eyJhzVCJ9.eyJpZCI6IjY1M.CkuDkZYapgF'
-  const accessToken = req.headers["authorization"].split(" ")[1];
+  const accessToken = req.headers["authorization"]?.split(" ")[1];
   jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, data) => {
     if (err) {
       return res.status(401).json({ msg: "invalid token" }); //Unauthorized
