@@ -16,7 +16,6 @@ async function localStrategyVerifyFunction(username, password, done) {
         const passwordMatched = await comparePasswords(password, user.password)
         // if password not matched
         if (!passwordMatched) {
-            console.log(username,password,passwordMatched);
             return done(null, false, { message: 'Incorrect password.' });
         }
 

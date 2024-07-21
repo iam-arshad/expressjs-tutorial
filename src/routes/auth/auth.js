@@ -65,7 +65,7 @@ router.post('/login', isAlreadyLoggedIn, passport.authenticate("local", { failur
 
   //updating the refreshToken in the db
   await User.findOneAndUpdate({ username: user.username }, { $push: { refreshTokens: refreshToken } });
-  res.json({ accessToken, refreshToken });
+  res.status(200).json({ accessToken, refreshToken });
 });
 
 router.post("/token", async (req, res) => {
@@ -117,7 +117,7 @@ function verifyToken(req, res, next) {
 
 // GET:http://localhost:3000/auth/profile
 router.get('/profile', verifyToken, (req, res) => {
-  res.send(`Welcome to your profile, ${req.user.username}`);
+  res.status(200).send(`Welcome to your profile, ${req.user.username}`);
 });
 
 

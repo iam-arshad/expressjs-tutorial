@@ -32,7 +32,7 @@ router.get("/example", (req, res, next) => {
 // http://localhost:3000/todos/2
 router.get("/:id", (req, res) => {
     let id = parseInt(req.params.id);
-    (id) ? res.send(data[id - 1]) : res.send("todo not found!");
+    (id && id<data.length) ? res.send(data[id - 1]) : res.send("todo not found!");
 })
 
 
@@ -52,7 +52,7 @@ router.put("/:id", (req, res) => {
     const todoIndexInTodosArray = data.findIndex(todo => todo.id === todoId);
     if (todoIndexInTodosArray !== -1) {
         data[todoIndexInTodosArray] = { id: todoId, ...todo }
-        res.status(201).send(data);
+        res.status(201).send(data[todoIndexInTodosArray]);
     }
     else {
         res.status(404).json({ error: "todo not found" });
@@ -65,7 +65,7 @@ router.patch("/:id", (req, res) => {
     let todoId = parseInt(req.params.id);
     let todoIndexInTodosArray = data.findIndex(todo => todo.id === todoId);
     if (todoIndexInTodosArray === -1) {
-        res.send('todo not found')
+        res.status(404).send('todo not found')
     }
     else {
         data[todoIndexInTodosArray].completed = req.body.completed;

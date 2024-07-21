@@ -612,3 +612,21 @@ I am importing that file and will be writing the testcases for it.
 
 >npm run test [fileName]
 
+Its important to open and close database connection with beforeEach and afterEach for evry test case.
+Why? Because when you try to test CRUD against the same record for same collection with the same database connection, of course you will encounter race condition. Even though this is something that won’t happen in production time.
+
+
+
+
+23. b)Testing express api's with supertest
+In the previous commit, as we refactored the code by moving the route handlers to a separate directory(i.e.,controllers), now we can test the actual api's with an npm library called supertest. To achive 100% test coverage, we need to do the same(move to /controllers) for all the route handlers. As of now, I will test the auth api's in the directory src/routes/auth/auth.js
+
+>npm install supertest --save-dev
+Supertest is a library for testing Node.js HTTP servers.
+It enables us to programmatically send HTTP requests such as GET, POST, PATCH, PUT, DELETE to HTTP servers and get results.
+https://www.albertgao.xyz/2017/05/24/how-to-test-expressjs-with-jest-and-supertest/
+
+Problem: 
+isAuthenticated method which is added to req object by passport(either by local||oauth20) is creating an issue in the middleware(loggedInMiddleware) in src/index.js. So, didnt mocked passport library. Try to mock to achieve faster,independent results.
+
+

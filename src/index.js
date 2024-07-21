@@ -46,8 +46,13 @@ app.get("/", (req, res) => {
   let username = req.user?.username;
 
   let flashMessage = req.flash('success');
+
+  // to disable caching, you can instruct the browser to fetch the resource from the server every time.
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  // if not cached, we will get 304 Not Modified status code instead of 200 OK, which will fail testcases
+  
   // passing username to the ejs view file
-  res.render("index", { username:username, success: flashMessage.length > 0 ? flashMessage : null });
+  res.status(200).render("index", { username:username, success: flashMessage.length > 0 ? flashMessage : null });
 });
 
 
@@ -76,3 +81,6 @@ function errorHandler(err, req, res, next) {
 app.use(errorHandler);
 
 app.listen(PORT,()=>console.log(`express server running on port ${PORT}`))
+
+
+module.exports= app;
