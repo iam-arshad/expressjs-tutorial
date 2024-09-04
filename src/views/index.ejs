@@ -1,43 +1,178 @@
-<!DOCTYPE html>
-<html lang="en">
+        <h1>ToDo App</h1>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        .success-flash-msg{
-            background: #a9d5a9;
-            width: 80%;
-            padding: 1%;
-            margin: 2% auto;
-            display: flex;
-            justify-content: space-between;
-        }
-    </style>
-</head>
+        <!-- flash message if the user successfully logs out -->
+        <% if (locals.success) { %>
+            <div class="success-flash-msg" id="success-flash-msg">
+                <%= locals.success %>
+                <button type="button" onclick="this.parentElement.remove()">X</button>
+            </div>
+            <script>
+                setTimeout(function() {
+                    var element = document.getElementById('success-flash-msg');
+                    if (element) {
+                        element.remove();
+                    }
+                }, 3000);
+            </script>
+        <% } %>
 
-<body>
+                <!-- if not logged in -->
+                <% if (!locals.username) { %>
+                    <button type="button" onclick='window.location.href="/auth/register"'>Register</button>
+                    <button type="button" onclick='window.location.href="/auth/login"'>Login</button>
+                    <!-- if logged in  -->
+                    <% }else{ %>
+                        Hello <%= locals.username%>
+                            <%}%>
 
-    <h1>ToDo App</h1>
 
-    <!-- flash message if the user successfully logs out -->
-    <% if (locals.success) { %>
-        <div class="success-flash-msg">
-          <%= locals.success %>
-          <button type="button" onclick="this.parentElement.remove()">X</button>
-        </div>
-    <% } %>
 
-    <!-- if not logged in -->
-    <% if (!locals.username) { %>
-        <button type="button" onclick='window.location.href="/auth/register"'>Register</button>
-        <button type="button" onclick='window.location.href="/auth/login"''>Login</button>
-    <!-- if logged in  -->
-    <% }else{ %>
-        Hello <%= locals.username%>
-    <%}%>
 
-</body>
-
-</html>
+                            <% if (locals.todos) { %>
+                                <button class="create-todo-btn" onclick="openCreateModal()">Create New Todo</button>
+                                <table class="todo-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Title</th>
+                                            <th>Description</th>
+                                            <th>Completed</th>
+                                            <th>Edit</th>
+                                            <th>Delete</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% locals.todos.forEach(todo => { %>
+                                            <tr>
+                                                <td><%= todo.title %></td>
+                                                <td><%= todo.description %></td>
+                                                <td><%= todo.completed===true?'✅':'⏳' %></td>
+                                                <td><button onclick="openEditModal('<%= todo.todoId %>', '<%= todo.title %>', '<%= todo.description %>', '<%= todo.completed ? `true` : `false` %>')">📝</button></td>
+                                                <td><button onclick="deleteTodo('<%= todo.todoId %>')">❌</button></td>
+                                            </tr>
+                                        <% }); %>
+                                    </tbody>
+                                </table>
+                            <% } %>
+                        
+                            <!-- The Modal -->
+                            <div id="editModal" class="modal">
+                                <div class="modal-content">
+                                    <span class="close" onclick="closeEditModal()">&times;</span>
+                                    <h2 id="modalTitle">Edit Todo</h2>
+                                    <form id="editForm">
+                                        <input type="hidden" id="todoId" name="todoId">
+                                        <div>
+                                            <label for="title">Title:</label>
+                                            <input type="text" id="title" name="title" required>
+                                        </div>
+                                        <div>
+                                            <label for="description">Description:</label>
+                                            <input type="text" id="description" name="description" required>
+                                        </div>
+                                        <div>
+                                            <label for="completed">Completed:</label>
+                                            <select id="completed" name="completed">
+                                                <option value="true">True</option>
+                                                <option value="false">False</option>
+                                            </select>
+                                        </div>
+                                        <button type="submit">Save</button>
+                                    </form>
+                                </div>
+                            </div>
+                        
+                            <script>
+                                function openCreateModal() {
+                                    document.getElementById('todoId').value = '';
+                                    document.getElementById('title').value = '';
+                                    document.getElementById('description').value = '';
+                                    document.getElementById('completed').value = 'false';
+                                    document.getElementById('modalTitle').textContent = 'Create New Todo';
+                                    document.getElementById('editModal').style.display = "block";
+                                }
+                            
+                                function openEditModal(id, title, description, completed) {
+                                    document.getElementById('todoId').value = id;
+                                    document.getElementById('title').value = title;
+                                    document.getElementById('description').value = description;
+                                    document.getElementById('completed').value = completed;
+                                    document.getElementById('modalTitle').textContent = 'Edit Todo';
+                                    document.getElementById('editModal').style.display = "block";
+                                }
+                            
+                                function closeEditModal() {
+                                    document.getElementById('editModal').style.display = "none";
+                                }
+                            
+                                document.getElementById('editForm').addEventListener('submit', function(event) {
+                                    event.preventDefault();
+                                    const formData = new FormData(event.target);
+                                    const todoId = formData.get('todoId');
+                                    const todoData = {
+                                        title: formData.get('title'),
+                                        description: formData.get('description'),
+                                        completed: formData.get('completed') === 'true'
+                                    };
+                            
+                                    if (todoId) {
+                                        // Update existing todo
+                                        fetch(`/todos/${todoId}`, {
+                                            method: 'PUT',
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify(todoData)
+                                        })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            if (data._id) {
+                                                closeEditModal();
+                                                location.reload();
+                                            } else {
+                                                alert('Error updating todo: ' + data.message);
+                                            }
+                                        })
+                                        .catch(error => {
+                                            alert('Error updating todo: ' + error.message);
+                                        });
+                                    } else {
+                                        // Create new todo
+                                        fetch(`/todos`, {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify(todoData)
+                                        })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            if (data._id) {
+                                                closeEditModal();
+                                                location.reload();
+                                            } else {
+                                                alert('Error creating todo: ' + data.message);
+                                            }
+                                        })
+                                        .catch(error => {
+                                            alert('Error creating todo: ' + error.message);
+                                        });
+                                    }
+                                });
+                            
+                                function deleteTodo(id) {
+                                    fetch(`/todos/${id}`, {
+                                        method: 'DELETE'
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data._id) {
+                                            location.reload();
+                                        } else {
+                                            alert('Error deleting todo: ' + data.message);
+                                        }
+                                    })
+                                    .catch(error => {
+                                        alert('Error deleting todo: ' + error.message);
+                                    });
+                                }
+                            </script>

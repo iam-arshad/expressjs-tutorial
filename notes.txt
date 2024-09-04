@@ -630,3 +630,5 @@ Problem:
 isAuthenticated method which is added to req object by passport(either by local||oauth20) is creating an issue in the middleware(loggedInMiddleware) in src/index.js. So, didnt mocked passport library. Try to mock to achieve faster,independent results.
 
 
+24. Final changes
+created a separate schem for todos which will have a field related to the userId field. Completed setup for rendering ejs templates.

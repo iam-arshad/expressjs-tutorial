@@ -1,0 +1,13 @@
+<header>
+    <nav class="navbar">
+        <ul>
+            <li class="logo"><a href="/">Todos</a></li>
+            <li class="nav-links"><a href="/auth/profile">Profile</a></li>
+            <% if (username) { %>
+                <li class="nav-links"><a href="/auth/logout">Logoff</a></li>
+              <% } else { %>
+                <li class="nav-links"><a href="/auth">Login</a></li>
+              <% } %>            
+        </ul>
+    </nav>
+</header>

@@ -1,23 +1,22 @@
 const express = require("express")
 const { Router } = require("express");
 const router = Router();
-
-//all todos
-const data = [
-    { id: 1, title: "learn express", description: "learn express framework from anson the developer youtube channel", completed: false },
-    { id: 2, title: "buy meds", description: "order meds for dad", completed: false },
-]
+const Todo = require("../../database/schemas/todos");
+const crypto=require("crypto");
 
 //http://localhost:3000/todos
 //http://localhost:3000/todos?id=1
-router.get("/", (req, res) => {
-    let id = parseInt(req.query.id);
+router.get("/", async (req, res) => {
+    const id = req.query.todoId;
+    const data= await Todo.find({userId:req.user.id})
+    // queryparam
     if (id) {
-        let fileteredData = data.find(todo => todo.id === id);
-        res.send(fileteredData);
+        const filteredData = data.find(todo => todo.todoId === id);
+        filteredData?res.status(200).json({todos:filteredData}):res.status(400).json({message:`No todo found with id:${id}`})
     }
+    // without queryparam
     else {
-        res.send(data);
+        res.status(200).json({todos:data});
     }
 })
 
@@ -30,60 +29,106 @@ router.get("/example", (req, res, next) => {
 
 // for better performance, replace /:id with a regex to handle only numbers as its value
 // http://localhost:3000/todos/2
-router.get("/:id", (req, res) => {
-    let id = parseInt(req.params.id);
-    (id && id<data.length) ? res.send(data[id - 1]) : res.send("todo not found!");
+router.get("/:todoId", async (req, res) => {
+    let id = req.params.todoId;
+    try{
+        const todo=await Todo.findOne({todoId:id})
+        todo?res.status(200).json(todo):res.status(400).json({message:`todo not found with id ${id}`})
+    }
+    catch(e){
+        res.status(500).json({message:e.message})
+    }
 })
 
+
+// to generate a random id for a todo(bcoz keeping a middleware(for auto incrementing todo id) in schema will be a burden on server and db)
+function generateRandomId(length = 16) {
+    const buffer = crypto.randomBytes(length);
+  return buffer.toString('hex');
+  }
 
 router.use(express.json()) //middleware func
 //http://localhost:3000/todos
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
     let newTodo = req.body;
-    newTodo = { id: data.length + 1, ...newTodo }
-    data.push(newTodo)
-    res.status(201).json(newTodo);
+    newTodo = { todoId: generateRandomId(), userId:req.user.id, ...newTodo }
+    console.log(newTodo);
+    try{
+        const data= await Todo.create(newTodo);
+        res.status(201).json(data);
+    }
+    catch(e){
+        res.status(400).json({message:e.message});
+    }
 })
 
 // http://localhost:3000/todos/4
-router.put("/:id", (req, res) => {
-    let todoId = parseInt(req.params.id);
-    let todo = req.body;
-    const todoIndexInTodosArray = data.findIndex(todo => todo.id === todoId);
-    if (todoIndexInTodosArray !== -1) {
-        data[todoIndexInTodosArray] = { id: todoId, ...todo }
-        res.status(201).send(data[todoIndexInTodosArray]);
+router.put("/:todoId", async (req, res) => {
+    const todoId = req.params.todoId;
+    const updates = req.body;
+
+    // security check not to update id's
+    delete updates._id;
+    delete updates.todoId;
+    delete updates.userId;
+    try {
+        const updatedTodo = await Todo.findOneAndUpdate(
+            { todoId: todoId }, // Query by todoId
+            updates, // Update data
+            { new: true, runValidators: true } // Return the updated document and validate updates
+        );
+
+        // Check if the todo was found and updated
+        if (updatedTodo) {
+            res.status(200).json(updatedTodo);
+        } else {
+            res.status(404).json({ message: `Todo not found with id ${todoId}` });
+        }
+    } catch (e) {
+        res.status(500).json({ message: e.message });
     }
-    else {
-        res.status(404).json({ error: "todo not found" });
-    }
-})
+});
+
 
 
 // http://localhost:3000/todos/1
-router.patch("/:id", (req, res) => {
-    let todoId = parseInt(req.params.id);
-    let todoIndexInTodosArray = data.findIndex(todo => todo.id === todoId);
-    if (todoIndexInTodosArray === -1) {
-        res.status(404).send('todo not found')
+router.patch("/:todoId", async (req, res) => {
+    let id = req.params.todoId;
+    try{
+        let newTodoData={};
+        if(req.body.title)newTodoData.title=req.body.title;
+        if(req.body.description)newTodoData.description=req.body.description;
+        if (req.body.hasOwnProperty('completed')) {
+            const completedValue = req.body.completed;
+            // Convert to boolean based on explicit string values or actual boolean
+            if (completedValue === 'true' || completedValue === true) {
+                newTodoData.completed = true;
+            } else if (completedValue === 'false' || completedValue === false) {
+                newTodoData.completed = false;
+            } else {
+                // Handle invalid boolean input or omit if invalid
+                return res.status(400).json({ message: 'Invalid value for completed field' });
+            }
+        }
+        console.log(newTodoData,req.body.completed);
+        const todo=await Todo.findOneAndUpdate({todoId:id},newTodoData,{new:true});
+        todo?res.status(200).json(todo):res.status(400).json({message:`todo not found with id ${id}`})
     }
-    else {
-        data[todoIndexInTodosArray].completed = req.body.completed;
-        res.status(201).json(data[todoIndexInTodosArray]);
+    catch(e){
+        res.status(500).json({message:e.message})
     }
 })
 
 
 // http://localhost:3000/todos/3
-router.delete("/:id", (req, res) => {
-    const id = parseInt(req.params.id);
-    const todoIndex = data.findIndex(todo => todo.id === id);
-    if (todoIndex !== -1) {
-        const deletedTodo = data.splice(id - 1, 1)[0];
-        res.json(deletedTodo);
+router.delete("/:todoId", async (req, res) => {
+    const id = req.params.todoId;
+    try{
+        const todo=await Todo.findOneAndDelete({todoId:id});
+        todo?res.status(200).json(todo):res.status(400).json({message:`todo not found with id ${id}`})
     }
-    else {
-        res.status(404).json({ error: "todo not found" });
+    catch(e){
+        res.status(500).json({message:e.message})
     }
 })
 

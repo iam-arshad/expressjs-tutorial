@@ -16,6 +16,11 @@ const isAlreadyLoggedIn = function (req, res, next) {
   }
 }
 
+// homepage to register/login
+router.get('/', isAlreadyLoggedIn, (req, res) => {
+  res.render("auth/auth");
+})
+
 // to render /register form from ejs template engine
 router.get("/register", isAlreadyLoggedIn, (req, res) => {
   // render src/views/auth/register.ejs
@@ -65,7 +70,15 @@ router.post('/login', isAlreadyLoggedIn, passport.authenticate("local", { failur
 
   //updating the refreshToken in the db
   await User.findOneAndUpdate({ username: user.username }, { $push: { refreshTokens: refreshToken } });
-  res.status(200).json({ accessToken, refreshToken });
+  if (req.isPostman) {
+    return res.status(200).json({ accessToken, refreshToken });
+  }
+  if (req.isBrowser) {
+    return res.redirect('/');
+  }
+
+  // if none of the above clients
+  return res.status(200).json({ accessToken, refreshToken });
 });
 
 router.post("/token", async (req, res) => {
@@ -103,16 +116,16 @@ function verifyToken(req, res, next) {
     return res.status(401).send("You're not logged in")
   }
 
-  // 'Bearer eyJhzVCJ9.eyJpZCI6IjY1M.CkuDkZYapgF'
-  const accessToken = req.headers["authorization"]?.split(" ")[1];
-  jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, data) => {
-    if (err) {
-      return res.status(401).json({ msg: "invalid token" }); //Unauthorized
-    }
-    // passport's local strategy will set the user's data in request object by default after logging in
-    // so, i am not utilizing the data(id,username,...) present in jwt here.
-    next();
-  })
+  if (req.isPostman) {
+    // 'Bearer eyJhzVCJ9.eyJpZCI6IjY1M.CkuDkZYapgF'
+    const accessToken = req.headers["authorization"]?.split(" ")[1];
+    jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, data) => {
+      if (err) {
+        return res.status(401).json({ msg: "invalid token" }); //Unauthorized
+      }
+    })
+  }
+  next();
 }
 
 // GET:http://localhost:3000/auth/profile
@@ -123,16 +136,21 @@ router.get('/profile', verifyToken, (req, res) => {
 
 // GET:http://localhost:3000/auth/logout
 router.get("/logout", async (req, res) => {
-  try{
-    await User.findOneAndUpdate({ username: req.user.username }, { $set: { refreshTokens: [] } }); //empty the refreshTokens array
-    req.logout(function (err) {
-      if (err) return next(err);
-      req.flash('success', 'logged out successfully!');
-      res.redirect('/');
-    });
+  if (!req.isAuthenticated()) {
+    res.send("You didn't loggedin to logoff!").end();
   }
-  catch(e){
-    return next(e);
+  else {
+    try {
+      await User.findOneAndUpdate({ username: req.user.username }, { $set: { refreshTokens: [] } }); //empty the refreshTokens array
+      req.logout(function (err) {
+        if (err) return next(err);
+        req.flash('success', 'logged out successfully!');
+        res.redirect('/');
+      });
+    }
+    catch (e) {
+      return next(e);
+    }
   }
 })
 
