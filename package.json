@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node ./src/index.js",
     "dev": "nodemon ./src/index.js",
-    "test": "jest --forceExit"
+    "test": "jest --forceExit",
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,7 @@
   },
   "homepage": "https://github.com/iam-arshad/expressjs-tutorial#readme",
   "dependencies": {
+    "aws-sdk": "^2.1691.0",
     "bcrypt": "^5.1.0",
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.6",
@@ -32,6 +34,8 @@
     "express-session": "^1.17.3",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^7.4.2",
+    "nock": "^13.5.5",
+    "node-polyfill-webpack-plugin": "^4.0.0",
     "passport": "^0.6.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-local": "^1.0.0"
@@ -39,6 +43,8 @@
   "devDependencies": {
     "jest": "^29.7.0",
     "nodemon": "^3.0.1",
-    "supertest": "^6.3.3"
+    "supertest": "^6.3.3",
+    "webpack": "^5.95.0",
+    "webpack-cli": "^5.1.4"
   }
 }
