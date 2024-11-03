@@ -632,3 +632,47 @@ isAuthenticated method which is added to req object by passport(either by local|
 
 24. Final changes
 created a separate schem for todos which will have a field related to the userId field. Completed setup for rendering ejs templates.
+
+
+25. NODE_ENV env variable to control env mode
+To maintain different environments like development,test,stage,production in the app, we need to maintain different sets of databases,builds,....even rest of the environment variables based on NODE_ENV environment variable.
+->create different .env files like .env.development, .env.production,.... and add the env specific env variables like DB URL's
+->create different webpack config files for different builds like webpack.config.dev.js,webpack.config.prod.js,....
+
+Flow: npm command will set the NODE_ENV, and in index.js need to load the rest of the environment variables based on the path given, which is based on the NODE_ENV set in the npm command.
+a)set the NODE_ENV value in package.json/scripts
+"scripts": {
+  "start": "NODE_ENV=development node app.js",
+  "start:prod": "NODE_ENV=production node app.js"
+  "build:dev": "webpack --config webpack.config.dev.js",
+  "build:prod": "webpack --config webpack.config.prod.js",
+}
+But for windows os, this process is slightly different, so we need to use cross-env package
+>npm i cross-env
+Now, update the above scripts to
+"scripts": {
+  "start": "cross-env NODE_ENV=development node app.js",
+  "start:prod": "cross-env NODE_ENV=production node app.js",
+  "build:dev": "cross-env NODE_ENV=development webpack --config webpack.config.dev.js",
+  "build:prod": "cross-env NODE_ENV=production webpack --config webpack.config.prod.js"
+}
+
+b)Load the environment variables based on the NODE_ENV
+src/index.js:
+//based on NODE_ENV value set in npm script,it will load the relative .env file(.env.production/.env.development/...)
+require('dotenv').config({
+  path: `.env.${process.env.NODE_ENV || 'development'}`
+});
+//Now,rest of the env variables which are set in env files can be accessed from process.env
+const dbUrl = process.env.DB_URL;
+console.log(`Connecting to database: ${dbUrl}`);
+
+
+
+Not only for configs, we can make our app different from one environment to another by keeping these conditions
+if (process.env.NODE_ENV === 'production') {
+  // Production-specific logic
+} else {
+  // Development-specific logic
+}
+
