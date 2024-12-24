@@ -8,7 +8,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: process.env.GOOGLE_CALLBACK_URL,
+      callbackURL: (req) => `${req.protocol}://${req.get('host')}/auth/google/callback`,
     },
     async (accessToken, refreshToken, profile, done) => {
       // This function will be called when a user is authenticated via Google.
