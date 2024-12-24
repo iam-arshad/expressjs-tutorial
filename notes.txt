@@ -676,3 +676,25 @@ if (process.env.NODE_ENV === 'production') {
   // Development-specific logic
 }
 
+
+27. Logging
+For implementing logging in Node.js applications using Pino, Morgan, and Winston, each catering to different logging needs and preferences. Follow these youtube videos to implement it in a nodejs app.
+https://www.youtube.com/watch?v=2kKeQl_m8iY
+https://www.youtube.com/watch?v=QUbksAVFe8g
+https://www.youtube.com/watch?v=A5YiqaQbsyI
+https://www.youtube.com/watch?v=2UTER21MCdk
+
++As I am going to deploy this app on multiple platforms, which will give different domains. And if the user tried to log in with Google OAuth2, we need to match the Google OAuth2 callback url based on the platform. And we have the GET endpoint at auth/api/google/redirect
+ex:
+callback url on Render platform should be something like https://my-tasks-f08i.onrender.com/auth/api/google/redirect
+callback url on railway platform should be something like https://expressjs-tutorial-production.up.railway.app/auth/api/
+google/redirect
+callback url when running the application in local on port 3000 should be something like http://localhost:3000/auth/api/google/redirect
+....
+
+For that,
+1.Add the callback uri's in google cloud console
+2.Pass the correct callback uri in passport's google OAuth2 strategy
+
+
+I am finishing up this tutorial here... Thanks, Happy learning!🙂

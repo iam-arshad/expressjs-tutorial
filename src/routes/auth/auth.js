@@ -5,6 +5,7 @@ const { hashPassword, setLoggedInUserAndCookie } = require("../../utils/authUtil
 const passport = require("passport");
 const jwt = require("jsonwebtoken")
 const router = Router();
+const initializeGoogleOAuth = require('../../strategies/googleOAuth2');
 
 // prevent user from get,post methods of register,login(but not profile,logout) routes if already logged in
 const isAlreadyLoggedIn = function (req, res, next) {
@@ -100,11 +101,20 @@ router.post("/token", async (req, res) => {
   })
 })
 
-// google oauth2 authentication route
-router.get("/google", passport.authenticate("google", { scope: ['profile', 'email'] }))
+// Use the dynamic Google OAuth middleware
+const googleOAuthMiddleware = initializeGoogleOAuth();
 
+// google oauth2 authentication route
+router.get("/google",googleOAuthMiddleware,(req, res, next) => {
+  // console.log('Callback URL:', req.callbackURL,req);
+  passport.authenticate('google', {
+      scope: ['profile', 'email'],
+  })(req, res, next);
+});
 // Google OAuth 2.0 callback URL
-router.get('/api/google/redirect', passport.authenticate('google', { failureRedirect: '/' }), (req, res) => {
+router.get('/api/google/redirect', (req, res, next) => {
+  passport.authenticate('google', { failureRedirect: '/login' })(req, res, next);
+}, (req, res) => {
   // Successful authentication, redirect to a different route or respond as needed.
   // console.log(req.user);
   res.redirect('/');

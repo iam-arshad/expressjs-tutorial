@@ -12,8 +12,6 @@ require("./database/index");
 require("./strategies/local");
 const Todo=require('./database/schemas/todos');
 
-require("./strategies/googleOAuth2");
-
 
 const app=express()
 const PORT=3000
